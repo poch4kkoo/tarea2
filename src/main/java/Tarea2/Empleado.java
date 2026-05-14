@@ -1,7 +1,7 @@
 package Tarea2;
 
 /**
- *
+ * Representa a un empleado de una empresa que puede ser invitado a una reunion.
  */
 public class Empleado implements Invitable {
 
@@ -61,13 +61,17 @@ public class Empleado implements Invitable {
 
     /**
      * Envia una invitacion al empleado imprimiendo la confirmacion
-     * con sus datos completos en la consola del sistema.
+     * con los datos del empleado.
      */
     @Override
     public void invitar() {
         System.out.println("Invitacion enviada a: " +nombre+ " "+apellidos+" ("+correo+")");
     }
 
+    /**
+     * Genera una descripcion completa de los datos del empleado.
+     * @return Cadena de texto con la informacion detallada del empleado.
+     */
     @Override
     public String toString() {
         return "Informacion del empleado: [ID = " + id+ ", Nombre = " + nombre+ " " +apellidos+ ", Correo = " +correo +  "]";

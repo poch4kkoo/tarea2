@@ -2,7 +2,6 @@ package Tarea2;
 
 /**
  * Registra y gestiona la asistencia de un empleado a la reunion.
- * Esta clase funciona como un contenedor para asociar un objeto {@link Empleado}
  */
 public class Asistencia {
 
