@@ -192,4 +192,52 @@ public abstract class Reunion {
                 ", Porcentaje Asistencia = " + obtenerPorcentajeAsistencia() +
                 ", Retrasos = " + obtenerRetrasos() + " }";
     }
+    // Métodos Nuevos (Requerimiento de Informe Txt)
+     //Metodo abstracto que será implementado por las subclases virtuales/presenciales para identificar el lugar o enlace de la reu
+    public abstract String obtenerTipoOEnlace();
+    /**
+     * genera un informe detallado de la reunion y lo guarda fisicamente en un archivo .txt
+     * @param nombreArchivo nombre del archivo a crear (ejemplo:"informe_reunion.txt")
+     */
+    public void generarInformeTxt(String nombreArchivo) {
+        try (java.io.FileWriter fw = new java.io.FileWriter(nombreArchivo);
+             java.io.PrintWriter pw = new java.io.PrintWriter(fw)) {
+// el signo de pregunta es un condicional porsia
+            pw.println("=======================================================================");
+            pw.println("                           INFORME DE REUNION                          ");
+            pw.println("=======================================================================");
+            pw.println("Fecha Planificada     : " + (fecha != null ? fecha.toString() : "No definida"));
+            pw.println("Hora Prevista         : " + (horaPrevista != null ? horaPrevista.toString() : "No definida"));
+            pw.println("Duracion Prevista     : " + (duracionPrevista != null ? duracionPrevista.toMinutes() + " minutos" : "No definida"));
+            pw.println("Ubicacion / Conexion  : " + obtenerTipoOEnlace());
+
+            pw.println("\n-----------------------------------------------------------------------");
+            pw.println("TIEMPOS REALES DE EJECUCION");
+            pw.println("-----------------------------------------------------------------------");
+            pw.println("Hora de Inicio Real   : " + (horaInicio != null ? horaInicio.toString() : "No iniciada"));
+            pw.println("Hora de Termino Real  : " + (horaFin != null ? horaFin.toString() : "No finalizada"));
+            pw.println("Duracion Total Real   : " + calcularTiempoReal() + " minutos");
+
+            pw.println("\n-----------------------------------------------------------------------");
+            pw.println("ESTADISTICAS DE ASISTENCIA");
+            pw.println("-----------------------------------------------------------------------");
+            pw.println("Total Invitados       : " + invitaciones.size());
+            pw.println("Asistentes Presentes  : " + obtenerTotalAsistencia());
+            pw.println("Porcentaje Asistencia : " + String.format("%.2f",obtenerPorcentajeAsistencia())+"%");
+
+            pw.println("\n-----------------------------------------------------------------------");
+            pw.println("DETALLE DE ASISTENTES");
+            pw.println("-----------------------------------------------------------------------");
+            if (asistencias.isEmpty()) {
+                pw.println("No se registran asistencias en esta reunion.");
+            } else {
+                for (Asistencia asistente : asistencias) {
+                    pw.println("  • " + asistente.toString());
+                }
+            }
+            System.out.println("Informe generado con exito en el archivo: " +nombreArchivo );
+        } catch (java.io.IOException e) {
+            System.err.println("Error al escribir el archivo de informe: " +e.getMessage());
+        }
+    }
 }
