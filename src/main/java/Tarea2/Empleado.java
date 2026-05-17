@@ -3,12 +3,10 @@ package Tarea2;
 /**
  * Representa a un empleado de una empresa que puede ser invitado a una reunion.
  */
-public class Empleado implements Invitable {
+public class Empleado extends Persona implements Invitable {
 
     private String id;
-    private String apellidos;
-    private String nombre;
-    private String correo;
+    //las variables apellidos,nombre y correo se borran de aqui porque ya las hereda de Persona
 
     /**
      * Construye un empleado con su identificador y datos de contacto.
@@ -18,10 +16,9 @@ public class Empleado implements Invitable {
      * @param correo direccion de correo del empleado.
      */
     public Empleado(String id, String apellidos, String nombre, String correo) {
+        super(nombre, apellidos, correo);
         this.id = id;
-        this.apellidos = apellidos;
-        this.nombre = nombre;
-        this.correo = correo;
+
     }
 
     //===========================================================================
@@ -32,15 +29,15 @@ public class Empleado implements Invitable {
     }
 
     public String getApellidos() {
-        return apellidos;
+        return super.getApellidos();
     }
 
     public String getNombre() {
-        return nombre;
+        return super.getNombre();
     }
 
     public String getCorreo() {
-        return correo;
+        return super.getCorreo();
     }
 
     public void setId(String id) {
@@ -48,15 +45,14 @@ public class Empleado implements Invitable {
     }
 
     public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
+        super.setApellidos(apellidos);
     }
-
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        super.setNombre(nombre);
     }
 
     public void setCorreo(String correo) {
-        this.correo = correo;
+        super.setCorreo(correo);
     }
 
     /**
@@ -65,7 +61,7 @@ public class Empleado implements Invitable {
      */
     @Override
     public void invitar() {
-        System.out.println("Invitacion enviada a: " +nombre+ " "+apellidos+" ("+correo+")");
+        System.out.println("Invitacion enviada a: "+getNombre()+" " +getApellidos()+" (" +getCorreo() +")");;
     }
 
     /**
@@ -74,6 +70,6 @@ public class Empleado implements Invitable {
      */
     @Override
     public String toString() {
-        return "Informacion del empleado: [ID = " + id+ ", Nombre = " + nombre+ " " +apellidos+ ", Correo = " +correo +  "]";
+        return "Informacion del empleado: [ID = "+id + ", Nombre = "+getNombre()+" "+getApellidos()+", Correo = "+getCorreo()+"]";
     }
 }
