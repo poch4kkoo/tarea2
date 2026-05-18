@@ -7,7 +7,7 @@ import java.util.Date;
 public class ReunionPresencial extends Reunion {
     private String sala;
 
-    public ReunionPresencial(Date fecha, Instant horaPrevista, Duration duracionPrevista, Instant horaInicio, Instant horaFin){
+    public ReunionPresencial(Date fecha, Instant horaPrevista, Duration duracionPrevista, Instant horaInicio, Instant horaFin, String sala){
         super(fecha, horaPrevista, duracionPrevista, horaInicio, horaFin);
         this.sala = sala;
     }
@@ -18,5 +18,10 @@ public class ReunionPresencial extends Reunion {
 
     public void setSala(String sala) {
         this.sala = sala;
+    }
+
+    @Override
+    public String obtenerTipoOEnlace() {
+        return "Presencial - Sala: " +(sala!=null ? sala :"No asignada");
     }
 }

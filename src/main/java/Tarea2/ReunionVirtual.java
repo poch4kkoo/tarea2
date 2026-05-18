@@ -7,17 +7,21 @@ import java.util.Date;
 public class ReunionVirtual extends Reunion {
     private String enlace;
 
-    public ReunionVirtual(Date fecha, Instant horaPrevista, Duration duracionPrevista, Instant horaInicio, Instant horaFin){
+    //se modofico agregando string enlace al constructor para que guarde el dato real
+    public ReunionVirtual(Date fecha, Instant horaPrevista, Duration duracionPrevista, Instant horaInicio, Instant horaFin, String enlace){
         super(fecha, horaPrevista, duracionPrevista, horaInicio, horaFin);
-        this.enlace = enlace;
-
+        this.enlace=enlace;
     }
-
     public String getEnlace() {
         return enlace;
     }
 
     public void setEnlace(String enlace) {
         this.enlace = enlace;
+    }
+
+    @Override
+    public String obtenerTipoOEnlace() {
+        return "Virtual - Enlace: " + (enlace != null ? enlace : "No asignado");
     }
 }
