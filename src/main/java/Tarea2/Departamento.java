@@ -1,5 +1,6 @@
 package Tarea2;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Departamento implements Invitable {
@@ -9,8 +10,12 @@ public class Departamento implements Invitable {
 
     public Departamento(String nombre) {
         this.nombre = nombre;
+        this.empleados = new ArrayList<>();
     }
 
+    public void agregarEmpleado(Empleado empleado) {
+        this.empleados.add(empleado);
+    }
 
     public int obtenerCantidadEmpleados(){
         return this.empleados.size();
