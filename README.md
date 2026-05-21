@@ -34,12 +34,19 @@ classDiagram
     Reunion <|-- ReunionPresencial
     Asistencia <|-- Retraso
 
-    %% Relaciones de Dependencia y Asociación
+    %% Relaciones de Interfaz (Realización)
+    Invitable <|.. Empleado
+    Invitable <|.. Departamento
+    Invitable <|.. Invitacion
+
+    %% Relaciones de Asociación y Agregación
     Reunion --> tipoReunion : usa
     Reunion "1" *-- "*" Invitacion : contiene
     Reunion "1" *-- "*" Asistencia : registra
+    Reunion "1" *-- "1" Nota : organizada por
     Invitacion --> Empleado : asignada a
     Asistencia --> Empleado : registra a
+    Departamento "1" *-- "*" Empleado : contiene
 
     %% Definición de Clases
     class Persona {
@@ -55,6 +62,20 @@ classDiagram
 
     class InvitadoExterno {
         - String empresa
+    }
+
+    class Departamento {
+        - String nombre
+        + obtenerCantidadEmpleados() int
+    }
+
+    class Invitable {
+        <<interface>>
+        + invitar() void
+    }
+
+    class Nota {
+        - String contenido
     }
 
     class Reunion {
@@ -73,17 +94,14 @@ classDiagram
         + iniciar() void
         + finalizar() void
         + generarInformeTxt(String) void
-        + obtenerTipoOEnlace()* String
     }
 
     class ReunionVirtual {
         - String enlace
-        + obtenerTipoOEnlace() String
     }
 
     class ReunionPresencial {
         - String sala
-        + obtenerTipoOEnlace() String
     }
 
     class Invitacion {
