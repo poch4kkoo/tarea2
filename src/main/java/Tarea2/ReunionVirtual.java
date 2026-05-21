@@ -8,8 +8,8 @@ public class ReunionVirtual extends Reunion {
     private String enlace;
 
     //se modofico agregando string enlace al constructor para que guarde el dato real
-    public ReunionVirtual(Date fecha, Instant horaPrevista, Duration duracionPrevista, Instant horaInicio, Instant horaFin, String enlace){
-        super(fecha, horaPrevista, duracionPrevista, horaInicio, horaFin);
+    public ReunionVirtual(tipoReunion tipo, Date fecha, Instant horaPrevista, Duration duracionPrevista, Instant horaInicio, Instant horaFin, String enlace){
+        super(tipo,fecha, horaPrevista, duracionPrevista, horaInicio, horaFin);
         this.enlace=enlace;
     }
     public String getEnlace() {

@@ -21,6 +21,7 @@ public abstract class Reunion {
     private List<Asistencia> asistencias;
     private List<Invitacion> invitaciones;
 
+    private tipoReunion tipo;
     /**
      * Constructor que inicializa los datos de la reunion y alas listas de control de asistencia.
      * @param fecha Dia en el cual se va a realizar la reunion.
@@ -29,7 +30,8 @@ public abstract class Reunion {
      * @param horaInicio Registro real del inicio de una reunion.
      * @param horaFin Registro real del fin de una reunion.
      */
-    public Reunion(Date fecha, Instant horaPrevista, Duration duracionPrevista, Instant horaInicio, Instant horaFin) {
+    public Reunion(tipoReunion tipo,Date fecha, Instant horaPrevista, Duration duracionPrevista, Instant horaInicio, Instant horaFin) {
+        this.tipo=tipo;
         this.fecha = fecha;
         this.horaPrevista = horaPrevista;
         this.duracionPrevista = duracionPrevista;
@@ -49,8 +51,30 @@ public abstract class Reunion {
         return asistencias;
     }
 
-    //Falta obtenerAusencias()
-
+    /**
+     * obtiene la lista de invitaciones de las personas que no asistieron a la reunion
+     * @return una lista con las invitaciones de los usuarios ausentes
+     */
+    public List<Invitacion> obtenerAusencias() {
+        List<Invitacion> ausencias=new ArrayList<>();
+        //recorremos invitacion realizada
+        for (Invitacion invitacion : invitaciones) {
+            boolean asistio=false;
+            //revisamos si el empleado aparece en la lista de asistencias
+            for (Asistencia asistencia : asistencias) {
+                //comparamos el invitado con el empleado que asistio
+                if (invitacion.getEmpleado()!=null && invitacion.getEmpleado().equals(asistencia.getEmpleado())) {
+                    asistio=true;
+                    break; //si ya encontramos que asistio,dejamos de buscar
+                }
+            }
+            //sii vemos todas las asistencias y nunca se volvio true, entonces esta ausente
+            if (!asistio) {
+                ausencias.add(invitacion);
+            }
+        }
+        return ausencias;
+    }
     /**
      * Filtra y retorna los empleados que presentaron retrasos al unirse a la reunion.
      * @return Lista de asistencia que corresponde a la subclase Retraso.
@@ -118,6 +142,9 @@ public abstract class Reunion {
     //===========================================================================
     // Getters y Setters
     //===========================================================================
+    public tipoReunion getTipo() {
+        return tipo;
+    }
 
     public Date getFecha() {
         return fecha;
@@ -175,7 +202,9 @@ public abstract class Reunion {
         this.invitaciones = invitaciones;
     }
 
-
+    public void setTipo(tipoReunion tipo) {
+        this.tipo = tipo;
+    }
     /**
      * Devuelve una representación en cadena de la reunión.
      * Incluye los detalles de planificación, los registros de tiempo real
@@ -200,23 +229,24 @@ public abstract class Reunion {
      * @param nombreArchivo nombre del archivo a crear (ejemplo:"informe_reunion.txt")
      */
     public void generarInformeTxt(String nombreArchivo) {
-        try (java.io.FileWriter fw = new java.io.FileWriter(nombreArchivo);
-             java.io.PrintWriter pw = new java.io.PrintWriter(fw)) {
+        try (java.io.FileWriter fw=new java.io.FileWriter(nombreArchivo);
+             java.io.PrintWriter pw=new java.io.PrintWriter(fw)) {
 // el signo de pregunta es un condicional porsia
             pw.println("=======================================================================");
             pw.println("                           INFORME DE REUNION                          ");
             pw.println("=======================================================================");
-            pw.println("Fecha Planificada     : " + (fecha != null ? fecha.toString() : "No definida"));
-            pw.println("Hora Prevista         : " + (horaPrevista != null ? horaPrevista.toString() : "No definida"));
-            pw.println("Duracion Prevista     : " + (duracionPrevista != null ? duracionPrevista.toMinutes() + " minutos" : "No definida"));
+            pw.println("Fecha Planificada     : " + (fecha!=null?fecha.toString() : "No definida"));
+            pw.println("Tipo de Reunión       : " + (tipo!=null?tipo.toString() : "No definido"));
+            pw.println("Hora Prevista         : " + (horaPrevista!=null?horaPrevista.toString() : "No definida"));
+            pw.println("Duracion Prevista     : " + (duracionPrevista!=null?duracionPrevista.toMinutes()+" minutos" : "No definida"));
             pw.println("Ubicacion / Conexion  : " + obtenerTipoOEnlace());
 
             pw.println("\n-----------------------------------------------------------------------");
             pw.println("TIEMPOS REALES DE EJECUCION");
             pw.println("-----------------------------------------------------------------------");
-            pw.println("Hora de Inicio Real   : " + (horaInicio != null ? horaInicio.toString() : "No iniciada"));
-            pw.println("Hora de Termino Real  : " + (horaFin != null ? horaFin.toString() : "No finalizada"));
-            pw.println("Duracion Total Real   : " + calcularTiempoReal() + " minutos");
+            pw.println("Hora de Inicio Real   : " + (horaInicio!=null?horaInicio.toString() : "No iniciada"));
+            pw.println("Hora de Termino Real  : " + (horaFin!=null?horaFin.toString() : "No finalizada"));
+            pw.println("Duracion Total Real   : " + calcularTiempoReal()+" minutos");
 
             pw.println("\n-----------------------------------------------------------------------");
             pw.println("ESTADISTICAS DE ASISTENCIA");
