@@ -20,7 +20,10 @@ Para ejecutar el proyecto:
 3. Configurar el SDK (java 17 o superior).
 4. Ejecutar la clase "mardedudas" ubicada en "src/main/java/Tarea2/Mardedudas.java".
 
-El diagrama se completo mediante las herramientas de git:
+El diagrama se completo mediante las herramientas de git y la justificacion del diseño y modificaciones son :
+1. Herencia de Persona: se identifico que Empleado e InvitadoExterno compartian atributos base (nombre, apellido, correo), se creo la clase abstracta Persona para evitar la duplicacion de codigo y permitir un manejo polimorfico de los participantes en las listas de invitaciones.
+2. Uso de un Enum (tipoReunion): se implemento para restringir las categorias de las reuniones a opciones validas y estandarizadas (TECNICA, MARKETING, ADMINISTRATIVA, DIRECTIVA), evitando errores de tipeo en la logica del negocio.
+3. Clase Invitacion y Metodo obtenerAusencias(): se creo el objeto Invitacion como puente formal entre Reunion y Empleado. Esto permitio programar la logica de ausencias comparando los invitados agendados contra los registros reales de asistencia.
 
 ```mermaid
 classDiagram
@@ -30,12 +33,14 @@ classDiagram
     Reunion <|-- ReunionVirtual
     Reunion <|-- ReunionPresencial
     Asistencia <|-- Retraso
+
     %% Relaciones de Dependencia y Asociación
     Reunion --> tipoReunion : usa
     Reunion "1" *-- "*" Invitacion : contiene
     Reunion "1" *-- "*" Asistencia : registra
     Invitacion --> Empleado : asignada a
     Asistencia --> Empleado : registra a
+
     %% Definición de Clases
     class Persona {
         <<abstract>>
@@ -43,12 +48,15 @@ classDiagram
         - String apellidos
         - String correo
     }
+
     class Empleado {
         - String id
     }
+
     class InvitadoExterno {
         - String empresa
     }
+
     class Reunion {
         <<abstract>>
         - Date fecha
@@ -57,7 +65,6 @@ classDiagram
         - Instant horaInicio
         - Instant horaFin
         + obtenerAsistencias() List
-
         + obtenerRetrasos() List
         + obtenerAusencias() List
         + obtenerTotalAsistencia() int
@@ -68,24 +75,30 @@ classDiagram
         + generarInformeTxt(String) void
         + obtenerTipoOEnlace()* String
     }
+
     class ReunionVirtual {
         - String enlace
         + obtenerTipoOEnlace() String
     }
+
     class ReunionPresencial {
         - String sala
         + obtenerTipoOEnlace() String
     }
+
     class Invitacion {
         - Instant hora
         + getEmpleado() Empleado
     }
+
     class Asistencia {
         - Instant horaLlegada
     }
+
     class Retraso {
         - String motivo
     }
+
     class tipoReunion {
         <<enumeration>>
         TECNICA
