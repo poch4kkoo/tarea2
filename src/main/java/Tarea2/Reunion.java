@@ -182,6 +182,10 @@ public abstract class Reunion {
             throw new ReunionNoIniciadaException("No se puede finalizar una reunion que aun no ha comenzado");
         }
 
+        if (Instant.now().isBefore(this.horaInicio)) {
+            throw new HoraFinInvalidaException("La hora de finalización no puede ser anterior a la hora de inicio.");
+        }
+
         horaFin = Instant.now();
     }
 
