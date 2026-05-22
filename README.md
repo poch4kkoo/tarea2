@@ -23,7 +23,8 @@ Para ejecutar el proyecto:
 El diagrama se completo mediante las herramientas de git y la justificacion del diseño y modificaciones son :
 1. Herencia de Persona: se identifico que Empleado e InvitadoExterno compartian atributos base (nombre, apellido, correo), se creo la clase abstracta Persona para evitar la duplicacion de codigo y permitir un manejo polimorfico de los participantes en las listas de invitaciones.
 2. Uso de un Enum (tipoReunion): se implemento para restringir las categorias de las reuniones a opciones validas y estandarizadas (TECNICA, MARKETING, ADMINISTRATIVA, DIRECTIVA), evitando errores de tipeo en la logica del negocio.
-3. Clase Invitacion y Metodo obtenerAusencias(): se creo el objeto Invitacion como puente formal entre Reunion y Empleado. Esto permitio programar la logica de ausencias comparando los invitados agendados contra los registros reales de asistencia.
+3. Clase Invitacion y Metodo obtenerAusencias(): se creo el objeto Invitacion como puente formal entre Reunion y Persona. Esto permitio programar la logica de ausencias comparando los invitados agendados contra los registros reales de asistencia, logrando identificar con presicion quien falto al evento.
+4. Manejo de excepciones en el ciclo de vida de la reunion: se crearon las excepciones personalizadas ReunionNoIniciadaException y ReunionFinalizadaException para proteger la logica de la reunion. Esto asegura que no se puedan calcular tiempos de asistencia si la reunion no ha comenzado, y restringe la adicion de notas exclusivamente a cuando el evento sigue activo, evitando modificaciones fuera de tiempo.
 
 ```mermaid
 classDiagram

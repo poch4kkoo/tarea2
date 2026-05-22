@@ -14,6 +14,7 @@ class ReunionTest1 {
 
     // Variables globales para el escenario de prueba
     private Reunion reunion;
+    private Empleado organizador;
     private Empleado emp1;
     private Empleado emp2;
     private Empleado emp3;
@@ -26,10 +27,13 @@ class ReunionTest1 {
     // Antes de ejecutar cada test, le presentamos estas condiciones iniciales.
     @BeforeEach
     void setUp() {
+
+        organizador = new Empleado("000", "Sinson", "Marge", "ms@udec.cl");
+
         // Inicializamos una reunión virtual
         reunion = new ReunionVirtual(tipoReunion.TECNICA,
-                 new Date(), horaInicio, Duration.ofMinutes(60)
-                , horaInicio, horaFin, "www.enlace.com");
+                  new Date(), horaInicio, Duration.ofMinutes(60),
+                  organizador, "www.enlace.com");
 
         // Creamos 3 empleados
         emp1 = new Empleado("123", "Sinson", "Homero", "hs@udec.cl");
@@ -72,7 +76,7 @@ class ReunionTest1 {
         List<Asistencia> listaRetrasos = reunion.obtenerRetrasos();
 
         assertEquals(1, listaRetrasos.size(), "Debería haber 1 persona en la lista de retrasos");
-        assertEquals(emp2, listaRetrasos.getFirst().getEmpleado(), "El empleado atrasado deberia ser Bart");
+        assertEquals(emp2, listaRetrasos.getFirst().getPersona(), "El empleado atrasado deberia ser Bart");
     }
 
     @Test
@@ -94,5 +98,20 @@ class ReunionTest1 {
 
         float porcentaje = reunion.obtenerPorcentajeAsistencia();
         assertEquals(66.67f, porcentaje, 0.01f, "Asisten 2 de los 3 invitados, deberia dar 66.67%");
+    }
+
+    @Test
+    @DisplayName("Caso Extremo: Lanzar excepción si se intenta agregar una nota a una reunión ya finalizada")
+    void testExcepcionNotaEnReunionFinalizada() {
+
+        reunion.iniciar();
+        reunion.finalizar();
+
+        Nota notaTardia = new Nota("Acuerdo de último minuto");
+
+
+        assertThrows(ReunionFinalizadaException.class, () -> {
+            reunion.agregarNota(notaTardia);
+        }, "Debería rechazar la nota porque la reunión ya se cerró");
     }
 }

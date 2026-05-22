@@ -18,29 +18,34 @@ public abstract class Reunion {
     private Instant horaInicio;
     private Instant horaFin;
 
+    private Empleado organizador;
     private List<Asistencia> asistencias;
     private List<Invitacion> invitaciones;
+    private List<Nota> notas;
 
     private tipoReunion tipo;
+
     /**
      * Constructor que inicializa los datos de la reunion y alas listas de control de asistencia.
      * @param fecha Dia en el cual se va a realizar la reunion.
      * @param horaPrevista Hora en la cual se va a realizar la reunion.
-     * @param duracionPrevista Timepo estimado de duracion de la reunion.
-     * @param horaInicio Registro real del inicio de una reunion.
-     * @param horaFin Registro real del fin de una reunion.
+     * @param duracionPrevista Tiempo estimado de duracion de la reunion.
+     * @param organizador Empleado que organiza la reunion.
      */
-    public Reunion(tipoReunion tipo,Date fecha, Instant horaPrevista, Duration duracionPrevista, Instant horaInicio, Instant horaFin) {
+    public Reunion(tipoReunion tipo,Date fecha, Instant horaPrevista, Duration duracionPrevista, Empleado organizador) {
         this.tipo=tipo;
         this.fecha = fecha;
         this.horaPrevista = horaPrevista;
         this.duracionPrevista = duracionPrevista;
-        this.horaInicio = horaInicio;
-        this.horaFin = horaFin;
+        this.organizador = organizador;
 
+        this.horaInicio = null;
+        this.horaFin = null;
 
         this.asistencias = new ArrayList<>();
         this.invitaciones = new ArrayList<>();
+        this.notas = new ArrayList<>();
+
     }
 
     /**
@@ -56,25 +61,47 @@ public abstract class Reunion {
      * @return una lista con las invitaciones de los usuarios ausentes
      */
     public List<Invitacion> obtenerAusencias() {
-        List<Invitacion> ausencias=new ArrayList<>();
+        List<Invitacion> ausencias = new ArrayList<>();
         //recorremos invitacion realizada
         for (Invitacion invitacion : invitaciones) {
-            boolean asistio=false;
+
+            boolean asistio = false;
+
+            Persona invitado = invitacion.getPersona();
+
+            if (invitado == null) { continue; }
+
             //revisamos si el empleado aparece en la lista de asistencias
             for (Asistencia asistencia : asistencias) {
-                //comparamos el invitado con el empleado que asistio
-                if (invitacion.getEmpleado()!=null && invitacion.getEmpleado().equals(asistencia.getEmpleado())) {
-                    asistio=true;
-                    break; //si ya encontramos que asistio,dejamos de buscar
+                Persona asistente = asistencia.getPersona();
+
+                if (asistente == null) { continue; }
+
+                if (invitado instanceof Empleado && asistente instanceof Empleado) {
+                    Empleado empInvitado = (Empleado) invitado;
+                    Empleado empAsistente = (Empleado) asistente;
+
+                    if (empInvitado.getId().equals(empAsistente.getId())) {
+                        asistio = true;
+                        break;
+                    }
+                }
+
+                else if (invitado instanceof InvitadoExterno && asistente instanceof InvitadoExterno) {
+                    if (invitado.getCorreo().equalsIgnoreCase(asistente.getCorreo())) {
+                        asistio = true;
+                        break;
+                    }
                 }
             }
-            //sii vemos todas las asistencias y nunca se volvio true, entonces esta ausente
+            //si vemos todas las asistencias y nunca se volvio true, entonces esta ausente
             if (!asistio) {
                 ausencias.add(invitacion);
             }
         }
         return ausencias;
     }
+
     /**
      * Filtra y retorna los empleados que presentaron retrasos al unirse a la reunion.
      * @return Lista de asistencia que corresponde a la subclase Retraso.
@@ -113,15 +140,30 @@ public abstract class Reunion {
 
     /**
      * Calcula la duracion total real de la reunion.
-     * @return Un mumero float que representa la cantidad de minutos que duro la reunion.
+     * @return Un numero float que representa la cantidad de minutos que duro la reunion.
      */
     public float calcularTiempoReal() {
-        if (horaInicio == null || horaFin == null){
-            return 0;
+        if (horaInicio == null){
+            throw new ReunionNoIniciadaException("No se puede calcular el tiempo real: la reunion aun no ha iniciado");
+        }
+
+        if (horaFin == null) {
+            Duration tiempoTranscurrido = Duration.between(horaInicio, Instant.now());
+            return (float) tiempoTranscurrido.toSeconds() / 60;
         }
 
         Duration duracion = Duration.between(horaInicio, horaFin);
         return (float) duracion.toSeconds() / 60;
+    }
+
+    public void agregarNota(Nota nota) {
+        if (horaFin != null) {
+            throw  new ReunionFinalizadaException("No se pueden añadir notas a una reunion ya finalizada");
+        }
+
+        if (nota != null) {
+            this.notas.add(nota);
+        }
     }
 
     /**
@@ -135,6 +177,15 @@ public abstract class Reunion {
      * Guarda la hora exacta de finalizacion de una reunion.
      */
     public void finalizar() {
+
+        if (this.horaInicio == null) {
+            throw new ReunionNoIniciadaException("No se puede finalizar una reunion que aun no ha comenzado");
+        }
+
+        if (Instant.now().isBefore(this.horaInicio)) {
+            throw new HoraFinInvalidaException("La hora de finalización no puede ser anterior a la hora de inicio.");
+        }
+
         horaFin = Instant.now();
     }
 
@@ -166,12 +217,20 @@ public abstract class Reunion {
         return horaFin;
     }
 
+    public Empleado getOrganizador() {
+        return organizador;
+    }
+
     public List<Asistencia> getAsistencias() {
         return asistencias;
     }
 
     public List<Invitacion> getInvitaciones() {
         return invitaciones;
+    }
+
+    public List<Nota> getNotas() {
+        return notas;
     }
 
     public void setFecha(Date fecha) {
@@ -194,6 +253,10 @@ public abstract class Reunion {
         this.horaFin = horaFin;
     }
 
+    public void setOrganizador(Empleado organizador) {
+        this.organizador = organizador;
+    }
+
     public void setAsistencias(List<Asistencia> asistencias) {
         this.asistencias = asistencias;
     }
@@ -205,6 +268,11 @@ public abstract class Reunion {
     public void setTipo(tipoReunion tipo) {
         this.tipo = tipo;
     }
+
+    public void setNotas(List<Nota> notas) {
+        this.notas = notas;
+    }
+
     /**
      * Devuelve una representación en cadena de la reunión.
      * Incluye los detalles de planificación, los registros de tiempo real
@@ -213,14 +281,18 @@ public abstract class Reunion {
      */
     @Override
     public String toString() {
-        return "Reunion{ Fecha =" + fecha +
+        return "Reunion{ " +
+                " Organizador = " + organizador +
+                ", Fecha =" + fecha +
                 ", horaPrevista = " + horaPrevista +
                 ", horaInicio = " + horaInicio +
                 ", horaFin = " + horaFin +
                 ", Total Asistencia = " + obtenerTotalAsistencia() +
                 ", Porcentaje Asistencia = " + obtenerPorcentajeAsistencia() +
-                ", Retrasos = " + obtenerRetrasos() + " }";
+                ", Retrasos = " + obtenerRetrasos() +
+                ", Notas de la reunion = " + notas+ "}";
     }
+
     // Métodos Nuevos (Requerimiento de Informe Txt)
      //Metodo abstracto que será implementado por las subclases virtuales/presenciales para identificar el lugar o enlace de la reu
     public abstract String obtenerTipoOEnlace();
@@ -228,15 +300,18 @@ public abstract class Reunion {
      * genera un informe detallado de la reunion y lo guarda fisicamente en un archivo .txt
      * @param nombreArchivo nombre del archivo a crear (ejemplo:"informe_reunion.txt")
      */
+
     public void generarInformeTxt(String nombreArchivo) {
         try (java.io.FileWriter fw=new java.io.FileWriter(nombreArchivo);
              java.io.PrintWriter pw=new java.io.PrintWriter(fw)) {
+
 // el signo de pregunta es un condicional porsia
             pw.println("=======================================================================");
             pw.println("                           INFORME DE REUNION                          ");
             pw.println("=======================================================================");
             pw.println("Fecha Planificada     : " + (fecha!=null?fecha.toString() : "No definida"));
             pw.println("Tipo de Reunión       : " + (tipo!=null?tipo.toString() : "No definido"));
+            pw.println("Organizador           : " + (organizador != null ? organizador.getNombre() + " " + organizador.getApellidos() : "No asignado"));
             pw.println("Hora Prevista         : " + (horaPrevista!=null?horaPrevista.toString() : "No definida"));
             pw.println("Duracion Prevista     : " + (duracionPrevista!=null?duracionPrevista.toMinutes()+" minutos" : "No definida"));
             pw.println("Ubicacion / Conexion  : " + obtenerTipoOEnlace());
@@ -258,13 +333,54 @@ public abstract class Reunion {
             pw.println("\n-----------------------------------------------------------------------");
             pw.println("DETALLE DE ASISTENTES");
             pw.println("-----------------------------------------------------------------------");
-            if (asistencias.isEmpty()) {
+            if (this.asistencias.isEmpty()) {
                 pw.println("No se registran asistencias en esta reunion.");
             } else {
                 for (Asistencia asistente : asistencias) {
                     pw.println("  • " + asistente.toString());
                 }
             }
+
+            pw.println("\n-----------------------------------------------------------------------");
+            pw.println("DETALLE DE AUSENCIAS");
+            pw.println("-----------------------------------------------------------------------");
+
+            List<Invitacion> ausencias = obtenerAusencias();
+            if (ausencias.isEmpty()) {
+                pw.println("No hubo ausencias. Asistencia perfecta.");
+            } else {
+                for (Invitacion ausente : ausencias) {
+                    Persona p = ausente.getPersona();
+
+                    if (p != null) {
+
+                        if (p instanceof Empleado) {
+                            Empleado emp = (Empleado) p;
+                            pw.println("  • [EMPLEADO AUSENTE] " + emp.getNombre() + emp.getApellidos() + " [Id: " + emp.getId() + ", Correo: " + emp.getCorreo() + "]");
+                        }
+
+                        else if (p instanceof InvitadoExterno) {
+                            pw.println("  • [EXTERNO AUSENTE] " + p.getNombre() + p.getApellidos() + " [Correo: " + p.getCorreo() + "]");
+                        }
+                    }
+                }
+            }
+
+            pw.println("\n-----------------------------------------------------------------------");
+            pw.println("NOTAS DE LA REUNION (Cronologicas)");
+            pw.println("-----------------------------------------------------------------------");
+            if (notas.isEmpty()) {
+                pw.println("No se añadieron notas en la reunion.");
+            } else {
+                int num = 1;
+
+                for(Nota nota : notas) {
+                    pw.println("Nota #" + num + ": " + nota.toString());
+                    num++;
+                }
+            }
+
+            pw.println("=======================================================================");
             System.out.println("Informe generado con exito en el archivo: " +nombreArchivo );
         } catch (java.io.IOException e) {
             System.err.println("Error al escribir el archivo de informe: " +e.getMessage());

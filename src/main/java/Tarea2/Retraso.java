@@ -36,6 +36,6 @@ public class Retraso extends Asistencia {
      */
     @Override
     public String toString() {
-        return "Atrasado, llego a las: " + hora.toString();
+        return super.toString() + "[RETRASO] Llego a las: " + hora.toString();
     }
 }

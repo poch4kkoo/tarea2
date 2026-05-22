@@ -5,25 +5,25 @@ package Tarea2;
  */
 public class Asistencia {
 
-    private Empleado empleado;
+    private Persona persona;
 
     /**
      * Construye un registro de asistencia relacionado a un empleado correspondiente.
-     * @param empleado un objeto empleado que registra su asistencia.
+     * @param persona un objeto persona que registra su asistencia.
      */
-    public Asistencia(Empleado empleado) {
-        this.empleado = empleado;
+    public Asistencia(Persona persona) {
+        this.persona = persona;
     }
 
     //===========================================================================
     // Getters y Setters
     //===========================================================================
-    public Empleado getEmpleado() {
-        return empleado;
+    public Persona getPersona() {
+        return persona;
     }
 
-    public void setEmpleado(Empleado empleado) {
-        this.empleado = empleado;
+    public void setPersona(Persona persona) {
+        this.persona = persona;
     }
 
     /**
@@ -32,6 +32,6 @@ public class Asistencia {
      */
     @Override
     public String toString() {
-        return "Asistente: " + empleado.getNombre() + " " + empleado.getApellidos();
+        return "Asistente: " + persona.getNombre() + " " + persona.getApellidos();
     }
 }
