@@ -27,7 +27,9 @@ class ReunionTest1 {
     @BeforeEach
     void setUp() {
         // Inicializamos una reunión virtual
-        reunion = new ReunionVirtual(tipoReunion.TECNICA, new Date(), horaInicio, Duration.ofMinutes(60), horaInicio, horaFin, "www.enlace.com");
+        reunion = new ReunionVirtual(tipoReunion.TECNICA,
+                 new Date(), horaInicio, Duration.ofMinutes(60)
+                , horaInicio, horaFin, "www.enlace.com");
 
         // Creamos 3 empleados
         emp1 = new Empleado("123", "Sinson", "Homero", "hs@udec.cl");
