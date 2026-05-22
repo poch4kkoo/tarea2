@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DepartamentoTest {
 
     @Test
-    @DisplayName("Validación de cantidad de empleados")
+    @DisplayName("Test de metodo para obtener cantidad de empleados")
 
     public void testObtenerCantidadEmpleados() {
 
@@ -26,7 +26,7 @@ public class DepartamentoTest {
     }
 
     @Test
-    @DisplayName("Validación de departamento vacío")
+    @DisplayName("Test en caso de departamento vacío")
 
     public void testObtenerCantidadEmpleadosVacio(){
         // departamento nuevo sin asignarle empleados
