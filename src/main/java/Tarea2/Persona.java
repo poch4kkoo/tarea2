@@ -19,4 +19,9 @@ public abstract class Persona {
 
     public String getCorreo() {return correo;}
     public void setCorreo(String correo) {this.correo=correo; }
+
+    @Override
+    public String toString() {
+        return "Persona [Nombre: " + nombre + ", Apellido: " + apellidos + ", Correo: " + correo + "]";
+    }
 }
