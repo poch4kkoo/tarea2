@@ -55,7 +55,7 @@ class ReunionMasInformeTest {
     @Test
     @DisplayName("Generacion del informe")
     void testGeneracionInformeTxt() {
-        String nombreInforme = "ReunionInformeTest.txt";
+        String nombreInforme = "InformeReunionCompletaTest.txt";
 
         reunion.iniciar();
 

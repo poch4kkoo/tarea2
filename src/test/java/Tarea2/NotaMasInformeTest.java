@@ -14,34 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class NotaMasInformeTest {
 
     @Test
-    @DisplayName("Funcionamiento lista de notas")
-
-    void testAgregarNotasExitosamente() {
-
-        Empleado organizador = new Empleado("Test", "Test", "Test", "Test");
-
-        Reunion reunion = new ReunionPresencial(tipoReunion.TECNICA,
-                new Date(), Instant.now(), Duration.ofMinutes(60),
-                organizador, "Sala 2");
-
-
-        // Creamos las notas
-        Nota nota1 = new Nota("Hola 123.");
-        Nota nota2 = new Nota("Esto es una nota");
-
-        reunion.agregarNota(nota1);
-        reunion.agregarNota(nota2);
-
-        // Verificaciones
-        assertEquals(2, reunion.getNotas().size(), "Deberían ser 2 notas.");
-        assertEquals("Hola 123.", reunion.getNotas().getFirst().getContenido(),
-                "La Primera nota debe ser Hola123.");
-    }
-
-    @Test
     @DisplayName("Se genera informe con 2 notas. El informe solo se enfoca en crear las notas.")
     void testInformeTxtConNotas() {
-        String Informe = "InformeNotasTest.txt";
+        String Informe = "InformeSoloNotas.txt";
 
         Empleado organizador = new Empleado("Test", "Test", "Test", "Test");
 

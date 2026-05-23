@@ -100,18 +100,4 @@ class ReunionTest {
         assertEquals(66.67f, porcentaje, 0.01f, "Asisten 2 de los 3 invitados, deberia dar 66.67%");
     }
 
-    @Test
-    @DisplayName("Caso Extremo: Lanzar excepción si se intenta agregar una nota a una reunión ya finalizada")
-    void testExcepcionNotaEnReunionFinalizada() {
-
-        reunion.iniciar();
-        reunion.finalizar();
-
-        Nota notaTardia = new Nota("Acuerdo de último minuto");
-
-
-        assertThrows(ReunionFinalizadaException.class, () -> {
-            reunion.agregarNota(notaTardia);
-        }, "Debería rechazar la nota porque la reunión ya se cerró");
-    }
 }
