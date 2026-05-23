@@ -28,14 +28,16 @@ class ReunionInformeTest {
         reunion = new ReunionVirtual(tipoReunion.TECNICA,
                 new Date(), horaInicio, Duration.ofMinutes(60),
                 organizador, "www.enlace.com");
-    }
 
-    @Test
-    @DisplayName("Debería registrar correctamente las invitaciones a la reunión")
-    void testInvitacionesReunion() {
         reunion.getInvitaciones().add(new Invitacion(organizador, horaInicio));
         reunion.getInvitaciones().add(new Invitacion(emp2, horaInicio));
         reunion.getInvitaciones().add(new Invitacion(emp3, horaInicio));
+
+        // Homero llega a la hora
+        // Bart llega 15 min tarde
+        // Lisa no asiste (no la agregamos a las asistencias)
+        reunion.getAsistencias().add(new Asistencia(organizador));
+        reunion.getAsistencias().add(new Retraso(emp2, Instant.now().plus(Duration.ofMinutes(15))));
 
         assertEquals(3, reunion.getInvitaciones().size(), "Deben haberse registrado 3 invitaciones.");
     }
@@ -43,28 +45,23 @@ class ReunionInformeTest {
     @Test
     @DisplayName("Debería calcular correctamente el total de asistencias y retrasos")
     void testRegistroAsistenciaYRetrasos() {
-        // Homero llega a la hora
-        reunion.getAsistencias().add(new Asistencia(organizador));
 
-        // Bart llega 15 minutos tarde
-        Instant horaRetrasoBart = horaInicio.plus(Duration.ofMinutes(15));
-        reunion.getAsistencias().add(new Retraso(emp2, horaRetrasoBart));
-
-        // Lisa no asiste (no la agregamos a las asistencias)
 
         // Verificaciones de asistencia
-        assertEquals(2, reunion.obtenerTotalAsistencia(), "El total de personas que asistieron o llegaron tarde debe ser 2.");
+        assertEquals(2, reunion.obtenerTotalAsistencia(), "El total de personas que asistieron debe ser 2.");
         assertEquals(1, reunion.obtenerRetrasos().size(), "Debe haber exactamente 1 retraso registrado (Bart).");
     }
 
-
-
     @Test
-    @DisplayName("Debería generar un archivo de informe de texto no vacío")
+    @DisplayName("Generacion del informe")
     void testGeneracionInformeTxt() {
         String nombreInforme = "ReunionInformeTest.txt";
 
         reunion.iniciar();
+
+        // Simulamos una duracion de 45 min
+        reunion.setHoraInicio(horaInicio.minus(Duration.ofMinutes(45)));
+        reunion.finalizar();
 
         // Ejecutamos la acción de generar el informe
         reunion.generarInformeTxt(nombreInforme);
@@ -75,6 +72,6 @@ class ReunionInformeTest {
         assertTrue(archivoResultado.exists(), "El archivo de informe .txt debió haberse creado.");
         assertTrue(archivoResultado.length() > 0, "El archivo de informe debería contener texto y no estar vacío.");
 
-        reunion.finalizar();
+
     }
 }
