@@ -73,6 +73,7 @@ classDiagram
     Persona       <|-- Empleado
     Persona       <|-- InvitadoExterno
     Invitable     <|.. Empleado
+    Invitable     <|.. InvitadoExterno
     Invitable     <|.. Departamento
     Departamento  "1" *-- "*" Empleado : contiene
  
