@@ -58,6 +58,5 @@ public class NotaTest {
             reunion.agregarNota(notaTardia);
         }, "Debería rechazar la nota porque la reunión ya se cerró");
     }
-
-
+    
 }
