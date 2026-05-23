@@ -34,6 +34,7 @@ El **diagrama UML** se completo mediante las herramientas de git:
 
 ### Diagrama principal
 
+
 ```mermaid
 classDiagram
     direction TB
@@ -44,19 +45,13 @@ classDiagram
         - String nombre
         - String apellidos
         - String correo
-        + getNombre() String
-        + getApellidos() String
-        + getCorreo() String
     }
     class Empleado {
         - String id
-        + getId() String
         + invitar() void
-        + toString() String
     }
     class InvitadoExterno {
         + invitar() void
-        + toString() String
     }
     class Invitable {
         <<interface>>
@@ -86,15 +81,15 @@ classDiagram
         - Instant horaInicio
         - Instant horaFin
         - tipoReunion tipo
+        - Empleado organizador
         + iniciar() void
         + finalizar() void
-        + obtenerAsistencias() List
-        + obtenerAusencias() List
-        + obtenerRetrasos() List
+        + agregarNota(Nota) void
+        + obtenerAusencias() List~Invitacion~
+        + obtenerRetrasos() List~Asistencia~
         + obtenerTotalAsistencia() int
         + obtenerPorcentajeAsistencia() float
         + calcularTiempoReal() float
-        + agregarNota(Nota) void
         + generarInformeTxt(String) void
         + obtenerTipoOEnlace() String
     }
@@ -123,24 +118,15 @@ classDiagram
     class Invitacion {
         - Instant hora
         - Persona persona
-        + getPersona() Persona
-        + getHora() Instant
-        + toString() String
     }
     class Asistencia {
         - Persona persona
-        + getPersona() Persona
-        + toString() String
     }
     class Retraso {
         - Instant hora
-        + getHora() Instant
-        + toString() String
     }
     class Nota {
         - String contenido
-        + getContenido() String
-        + toString() String
     }
  
     Asistencia    <|-- Retraso
