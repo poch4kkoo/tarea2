@@ -32,30 +32,13 @@ categorizacion y reportabilidad: uso de un enum "tipoReunion" para clasificar la
 
 El **diagrama UML** se completo mediante las herramientas de git:
 
+### Diagrama principal
+
 ```mermaid
 classDiagram
-    %% Herencia
-    Persona <|-- Empleado
-    Persona <|-- InvitadoExterno
-    Reunion <|-- ReunionVirtual
-    Reunion <|-- ReunionPresencial
-    Asistencia <|-- Retraso
+    direction TB
  
-    %% Interfaces
-    Invitable <|.. Empleado
-    Invitable <|.. Departamento
- 
-    %% Asociaciones
-    Reunion --> tipoReunion : usa
-    Reunion "1" *-- "*" Invitacion : contiene
-    Reunion "1" *-- "*" Asistencia : registra
-    Reunion "1" *-- "*" Nota : contiene
-    Reunion "1" --> "1" Empleado : organizada por
-    Invitacion --> Persona : asignada a
-    Asistencia --> Persona : registra a
-    Departamento "1" *-- "*" Empleado : contiene
- 
-    %% Clases
+    %% ── PARTICIPANTES ──────────────────────────────────────────
     class Persona {
         <<abstract>>
         - String nombre
@@ -65,19 +48,20 @@ classDiagram
         + getApellidos() String
         + getCorreo() String
     }
- 
     class Empleado {
         - String id
         + getId() String
         + invitar() void
         + toString() String
     }
- 
     class InvitadoExterno {
         + invitar() void
         + toString() String
     }
- 
+    class Invitable {
+        <<interface>>
+        + invitar() void
+    }
     class Departamento {
         - String nombre
         - List~Empleado~ empleados
@@ -86,17 +70,13 @@ classDiagram
         + invitar() void
     }
  
-    class Invitable {
-        <<interface>>
-        + invitar() void
-    }
+    Persona       <|-- Empleado
+    Persona       <|-- InvitadoExterno
+    Invitable     <|.. Empleado
+    Invitable     <|.. Departamento
+    Departamento  "1" *-- "*" Empleado : contiene
  
-    class Nota {
-        - String contenido
-        + getContenido() String
-        + toString() String
-    }
- 
+    %% ── REUNIÓN ────────────────────────────────────────────────
     class Reunion {
         <<abstract>>
         - Date fecha
@@ -105,10 +85,6 @@ classDiagram
         - Instant horaInicio
         - Instant horaFin
         - tipoReunion tipo
-        - Empleado organizador
-        - List~Invitacion~ invitaciones
-        - List~Asistencia~ asistencias
-        - List~Nota~ notas
         + iniciar() void
         + finalizar() void
         + obtenerAsistencias() List
@@ -121,37 +97,14 @@ classDiagram
         + generarInformeTxt(String) void
         + obtenerTipoOEnlace() String
     }
- 
     class ReunionVirtual {
         - String enlace
         + obtenerTipoOEnlace() String
     }
- 
     class ReunionPresencial {
         - String sala
         + obtenerTipoOEnlace() String
     }
- 
-    class Invitacion {
-        - Instant hora
-        - Persona persona
-        + getPersona() Persona
-        + getHora() Instant
-        + toString() String
-    }
- 
-    class Asistencia {
-        - Persona persona
-        + getPersona() Persona
-        + toString() String
-    }
- 
-    class Retraso {
-        - Instant hora
-        + getHora() Instant
-        + toString() String
-    }
- 
     class tipoReunion {
         <<enumeration>>
         TECNICA
@@ -160,15 +113,75 @@ classDiagram
         DIRECTIVA
     }
  
+    Reunion       <|-- ReunionVirtual
+    Reunion       <|-- ReunionPresencial
+    Reunion       --> tipoReunion       : usa
+    Reunion "1"   --> "1" Empleado      : organizada por
+ 
+    %% ── ASISTENCIA E INVITACIÓN ────────────────────────────────
+    class Invitacion {
+        - Instant hora
+        - Persona persona
+        + getPersona() Persona
+        + getHora() Instant
+        + toString() String
+    }
+    class Asistencia {
+        - Persona persona
+        + getPersona() Persona
+        + toString() String
+    }
+    class Retraso {
+        - Instant hora
+        + getHora() Instant
+        + toString() String
+    }
+    class Nota {
+        - String contenido
+        + getContenido() String
+        + toString() String
+    }
+ 
+    Asistencia    <|-- Retraso
+    Reunion  "1"  *-- "*" Invitacion  : contiene
+    Reunion  "1"  *-- "*" Asistencia  : registra
+    Reunion  "1"  *-- "*" Nota        : contiene
+    Invitacion    --> Persona          : asignada a
+    Asistencia    --> Persona          : registra a
+```
+
+### Diagrama de excepciones
+
+```mermaid
+classDiagram
+    direction LR
+ 
+    class RuntimeException {
+        <<exception>>
+    }
     class ReunionNoIniciadaException {
         <<exception>>
+        + ReunionNoIniciadaException(String)
     }
- 
     class ReunionFinalizadaException {
         <<exception>>
+        + ReunionFinalizadaException(String)
     }
- 
     class HoraFinInvalidaException {
         <<exception>>
+        + HoraFinInvalidaException(String)
     }
+    class Reunion {
+        <<abstract>>
+        + finalizar() void
+        + calcularTiempoReal() float
+        + agregarNota(Nota) void
+    }
+ 
+    RuntimeException        <|-- ReunionNoIniciadaException
+    RuntimeException        <|-- ReunionFinalizadaException
+    RuntimeException        <|-- HoraFinInvalidaException
+    Reunion ..> ReunionNoIniciadaException  : lanza
+    Reunion ..> ReunionFinalizadaException  : lanza
+    Reunion ..> HoraFinInvalidaException    : lanza
 ```
