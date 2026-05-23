@@ -1,10 +1,24 @@
 package Tarea2;
-//clase que representa cualquier individuo
+
+/**
+ * clase abstracta que representa a una persona.
+ * agrupa la informacion necesaria para distingir
+ * diferentes personas.
+ */
+
 public abstract class Persona {
     private String nombre;
     private String apellidos;
     private String correo;
 //constructuro para inicializar los datos basicos
+
+    /**
+     * Constructor base para inicializar los datos esenciales de cualquier persona.
+     *
+     * @param nombre    El nombre del individuo.
+     * @param apellidos Apellidos del individuo.
+     * @param correo    La dirección de correo electrónico de la persona.
+     */
     public Persona(String nombre,String apellidos,String correo) {
         this.nombre=nombre;
         this.apellidos=apellidos;

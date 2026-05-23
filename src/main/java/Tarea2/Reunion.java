@@ -138,9 +138,16 @@ public abstract class Reunion {
         }
     }
 
+
     /**
      * Calcula la duracion total real de la reunion.
+     * <p>
+     * Si la reunión aún está en desarrollo (no ha finalizado), calcula el tiempo
+     * transcurrido desde su inicio hasta la consulta.
+     *
      * @return Un numero float que representa la cantidad de minutos que duro la reunion.
+     * @throws ReunionNoIniciadaException Si se intenta calcular el tiempo sin haber
+     * invocado previamente el método iniciar().
      */
     public float calcularTiempoReal() throws ReunionNoIniciadaException {
         if (horaInicio == null){
@@ -156,6 +163,15 @@ public abstract class Reunion {
         return (float) duracion.toSeconds() / 60;
     }
 
+    /**
+     * Añade una nota a la reunión.
+     * <p>
+     * Las anotaciones solo están permitidas mientras la reunión se encuentre activa.
+     *
+     * @param nota El objeto Nota que contiene el texto.
+     * @throws ReunionFinalizadaException Si se intenta agregar una nota después de que
+     * la reunión haya sido cerrada con finalizar().
+     */
     public void agregarNota(Nota nota) throws ReunionFinalizadaException {
         if (horaFin != null) {
             throw  new ReunionFinalizadaException("No se pueden añadir notas a una reunion ya finalizada");
@@ -173,8 +189,14 @@ public abstract class Reunion {
         horaInicio = Instant.now();
     }
 
+
     /**
      * Guarda la hora exacta de finalizacion de una reunion.
+     *
+     * @throws ReunionNoIniciadaException Si se intenta finalizar una reunión en la que
+     * nunca se llamó al método iniciar().
+     * @throws HoraFinInvalidaException   Caso extremo en que el momento
+     * de término resulta ser previo al inicio.
      */
     public void finalizar() throws ReunionNoIniciadaException, HoraFinInvalidaException {
 
