@@ -109,7 +109,6 @@ class ReunionTest {
 
         Nota notaTardia = new Nota("Acuerdo de último minuto");
 
-
         assertThrows(ReunionFinalizadaException.class, () -> {
             reunion.agregarNota(notaTardia);
         }, "Debería rechazar la nota porque la reunión ya se cerró");

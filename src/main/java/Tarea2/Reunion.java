@@ -142,7 +142,7 @@ public abstract class Reunion {
      * Calcula la duracion total real de la reunion.
      * @return Un numero float que representa la cantidad de minutos que duro la reunion.
      */
-    public float calcularTiempoReal() {
+    public float calcularTiempoReal() throws ReunionNoIniciadaException {
         if (horaInicio == null){
             throw new ReunionNoIniciadaException("No se puede calcular el tiempo real: la reunion aun no ha iniciado");
         }
@@ -156,7 +156,7 @@ public abstract class Reunion {
         return (float) duracion.toSeconds() / 60;
     }
 
-    public void agregarNota(Nota nota) {
+    public void agregarNota(Nota nota) throws ReunionFinalizadaException {
         if (horaFin != null) {
             throw  new ReunionFinalizadaException("No se pueden añadir notas a una reunion ya finalizada");
         }
@@ -176,7 +176,7 @@ public abstract class Reunion {
     /**
      * Guarda la hora exacta de finalizacion de una reunion.
      */
-    public void finalizar() {
+    public void finalizar() throws ReunionNoIniciadaException, HoraFinInvalidaException {
 
         if (this.horaInicio == null) {
             throw new ReunionNoIniciadaException("No se puede finalizar una reunion que aun no ha comenzado");
@@ -193,9 +193,7 @@ public abstract class Reunion {
     //===========================================================================
     // Getters y Setters
     //===========================================================================
-    public tipoReunion getTipo() {
-        return tipo;
-    }
+    public tipoReunion getTipo() { return tipo; }
 
     public Date getFecha() {
         return fecha;
@@ -356,11 +354,11 @@ public abstract class Reunion {
 
                         if (p instanceof Empleado) {
                             Empleado emp = (Empleado) p;
-                            pw.println("  • [EMPLEADO AUSENTE] " + emp.getNombre() + emp.getApellidos() + " [Id: " + emp.getId() + ", Correo: " + emp.getCorreo() + "]");
+                            pw.println("  • [EMPLEADO AUSENTE] " + emp.getNombre() + " " + emp.getApellidos() + " [Id: " + emp.getId() + ", Correo: " + emp.getCorreo() + "]");
                         }
 
                         else if (p instanceof InvitadoExterno) {
-                            pw.println("  • [EXTERNO AUSENTE] " + p.getNombre() + p.getApellidos() + " [Correo: " + p.getCorreo() + "]");
+                            pw.println("  • [EXTERNO AUSENTE] " + p.getNombre() + " " + p.getApellidos() + " [Correo: " + p.getCorreo() + "]");
                         }
                     }
                 }

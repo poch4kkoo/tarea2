@@ -3,7 +3,7 @@ package Tarea2;
 import java.time.Instant;
 
 /**
- * Representa un tipo especial de asistencia, en donde el empleado llega tarde.
+ * Representa un tipo especial de asistencia, en donde el empleado/invitado externo llega tarde.
  */
 public class Retraso extends Asistencia {
 
@@ -11,11 +11,11 @@ public class Retraso extends Asistencia {
 
     /**
      * Construye un registro de los retrasos de los empleados a la reunion.
-     * @param empleado Objeto que representa al empleado que llega tarde.
+     * @param persona Objeto que representa al empleado o invitado externo que llega tarde.
      * @param hora Hora  exacta en la que ingresa el empleado a la reunion.
      */
-    public Retraso (Empleado empleado, Instant hora) {
-        super(empleado);
+    public Retraso (Persona persona, Instant hora) {
+        super(persona);
         this.hora = hora;
     }
 
