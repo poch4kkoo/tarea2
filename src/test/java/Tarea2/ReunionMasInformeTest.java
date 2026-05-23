@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.util.Date;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ReunionInformeTest {
+class ReunionMasInformeTest {
 
     private Reunion reunion;
     private Empleado organizador;

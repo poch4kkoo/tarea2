@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ReunionTest1 {
+class ReunionTest {
 
     // Variables globales para el escenario de prueba
     private Reunion reunion;

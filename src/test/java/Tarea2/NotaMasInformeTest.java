@@ -11,7 +11,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class NotaTest {
+public class NotaMasInformeTest {
 
     @Test
     @DisplayName("Funcionamiento lista de notas")
@@ -39,7 +39,7 @@ public class NotaTest {
     }
 
     @Test
-    @DisplayName("Se genera informe con 2 notas")
+    @DisplayName("Se genera informe con 2 notas. El informe solo se enfoca en crear las notas.")
     void testInformeTxtConNotas() {
         String Informe = "InformeNotasTest.txt";
 
